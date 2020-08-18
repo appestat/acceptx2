@@ -41,7 +41,8 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 extra-deps:
-- openid-connect-0.1.0.0@sha256:f5ea75350e07e9043ed3bf7d64a5a38628a206e2d681ab28c0f56efe11c01427,5057
+- openid-0.2.1.0@sha256:b6ece69af1c1dcb22b17981cab4a509f09c4aefe20bf9c144e1e407d989fa29e,2693
+- monadLib-3.10@sha256:21dc120625bd612527b372e54251fd8358270effe263023d40d8e5892d24531c,653
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

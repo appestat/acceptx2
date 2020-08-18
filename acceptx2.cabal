@@ -31,13 +31,15 @@ library
   hs-source-dirs:
       src
   build-depends:
-      aeson
+      HTTP
+    , aeson
     , base >=4.7 && <5
     , base-compat
     , containers
     , directory
     , mtl
-    , openid-connect
+    , network
+    , openid
     , servant
     , servant-js
     , servant-server
@@ -54,14 +56,16 @@ executable acceptx2-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      acceptx2
+      HTTP
+    , acceptx2
     , aeson
     , base >=4.7 && <5
     , base-compat
     , containers
     , directory
     , mtl
-    , openid-connect
+    , network
+    , openid
     , servant
     , servant-js
     , servant-server
@@ -79,14 +83,16 @@ test-suite acceptx2-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      acceptx2
+      HTTP
+    , acceptx2
     , aeson
     , base >=4.7 && <5
     , base-compat
     , containers
     , directory
     , mtl
-    , openid-connect
+    , network
+    , openid
     , servant
     , servant-js
     , servant-server

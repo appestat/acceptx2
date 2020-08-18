@@ -21,17 +21,19 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
-- openid-connect
 - servant
 - servant-server
 - aeson
 - wai
+- HTTP
 - mtl
 - transformers
 - base-compat
 - warp
 - directory
 - containers
+- network
+- openid
 - servant-js
 library:
   source-dirs: src
