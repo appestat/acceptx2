@@ -35,6 +35,8 @@ library
     , aeson
     , base >=4.7 && <5
     , base-compat
+    , bytestring
+    , case-insensitive
     , containers
     , directory
     , mtl
@@ -61,6 +63,8 @@ executable acceptx2-exe
     , aeson
     , base >=4.7 && <5
     , base-compat
+    , bytestring
+    , case-insensitive
     , containers
     , directory
     , mtl
@@ -88,6 +92,8 @@ test-suite acceptx2-test
     , aeson
     , base >=4.7 && <5
     , base-compat
+    , bytestring
+    , case-insensitive
     , containers
     , directory
     , mtl

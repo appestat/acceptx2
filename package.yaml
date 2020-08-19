@@ -35,6 +35,8 @@ dependencies:
 - network
 - openid
 - servant-js
+- bytestring
+- case-insensitive
 library:
   source-dirs: src
 

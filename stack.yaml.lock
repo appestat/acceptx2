@@ -5,13 +5,6 @@
 
 packages:
 - completed:
-    hackage: openid-0.2.1.0@sha256:b6ece69af1c1dcb22b17981cab4a509f09c4aefe20bf9c144e1e407d989fa29e,2693
-    pantry-tree:
-      size: 1423
-      sha256: 8bc8c0377830b78448087b6ddf607a5609d32b6701c5bbd47375ad7cd1f9c2f7
-  original:
-    hackage: openid-0.2.1.0@sha256:b6ece69af1c1dcb22b17981cab4a509f09c4aefe20bf9c144e1e407d989fa29e,2693
-- completed:
     hackage: monadLib-3.10@sha256:21dc120625bd612527b372e54251fd8358270effe263023d40d8e5892d24531c,653
     pantry-tree:
       size: 426

@@ -20,9 +20,12 @@ import Control.Monad.Identity
 import Data.Aeson
 import Data.Aeson.Types
 import Data.List
+import Data.ByteString.Char8 as C
+import Data.ByteString as W
 import qualified Data.Map as M
 import Data.Maybe
 import GHC.Generics
+import qualified Data.CaseInsensitive as CI
 import Network.Wai
 import Network.HTTP
 import System.Environment
@@ -31,6 +34,8 @@ import Servant
 import Servant.JS
 import Data.IORef
 import Network.OpenID
+import Network.URI
+import Debug.Trace
 import System.Directory
 import Servant.Types.SourceT (source)
 import qualified Data.Aeson.Parser
@@ -45,7 +50,8 @@ type QueueAPI = "game" :> Capture "id" Int :>
                  :<|> "voteMap" :> ReqBody '[JSON] (User, MapName) :> Post '[JSON] Queue
                  :<|> "voteShuffle" :> ReqBody '[JSON] User :> Post '[JSON] Queue) -- remove from game
                 :<|> "game" :> "new" :> ReqBody '[JSON] User :> Post '[JSON] Queue
-                :<|> "auth" :> ReqBody
+                :<|> "auth" :> "openid" :> Post '[JSON] ()
+                :<|> "auth" :> "openid" :> "return" :> QueryParam "openid.identity" String :> Get '[JSON] User
 -- /game/1
 type MapName = String
 
@@ -117,6 +123,8 @@ removeUser = undefined
 queueAPI :: Proxy QueueAPI
 queueAPI = Proxy
 
+
+
 server :: ServerT QueueAPI SState
 server = (\ix ->
             lkup ix
@@ -127,6 +135,8 @@ server = (\ix ->
            :<|> (\(u, m) -> addVote (m, u) <$> lkup ix)
            :<|> (\u -> addShuffleVote u <$> lkup ix))
          :<|> create
+         :<|> resolve
+         :<|> (\s -> pure $ User (read (Data.List.last $ pathSegments (fromJust $ parseURI (fromJust s)))))
          where
            create :: User -> SState Queue
            create user = let newQ = addTeamA user emptyQueue in
@@ -145,15 +155,10 @@ start = newIORef M.empty >>= \x -> (run 8081 (app x))
 
 apiJS = jsForAPI queueAPI vanillaJS
 
-steamURI = (parseProvider "https://steamcommunity.com/openid/")
+steamURI = fromJust $ (parseProvider "https://steamcommunity.com/openid/login")
 
-resolve :: Resolver IO
-resolve x = simpleHTTP x
-
-assocSteam :: SState AssociationMap
-assocSteam = do
-  x <- associate emptyAssociatationMap True undefined steamURI
-
-
-auth = withSocketsDo $
-  withOpenSSL $ do
+resolve :: SState ()
+resolve = do
+  let uri = (uriToString id (authenticationURI emptyAssociationMap Setup steamURI (Identifier "http://specs.openid.net/auth/2.0/identifier_select") "http://localhost:8081/auth/openid/return"
+                             (Just [("openid.ns.ax", "http://openid.net/srv/ax/1.0"),("openid.ax.mode", "fetch_request")]) (Just "http://localhost"))) ""
+  throwError $ err301 {errHeaders = pure (CI.mk (C.pack "Location"), C.pack uri)}
