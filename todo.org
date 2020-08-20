@@ -1,42 +1,13 @@
-#+TITLE: ACCEPT ACCEPT Todo
+#+TITLE: Acceptx2  Todo
 * API Design
-note here :id is a unique id for that match, not the steamid
-** /queue
-*** POST steamid /queue/:id/
-adds a steamid to the waiting queue
-*** DELETE steamid /queue/:id/
-removes a steamid from the waiting queue
-*** GET /queue/:id/
-gets the list of steamids in queue (json object)
-**** json object should prolly look like:
-#+BEGIN_SRC js
-{
-    team1 : [steamid, steamid, etc...],
-    team2 : [steamid, steamid, etc...],
-    undecided : [etc...]
-}
-#+END_SRC
-** /match
-when a queue hits 10, a match is created and the players are redirected to the match page
-*** GET /match/:id
-gets the steam ids in match, current map votes, shuffle vote progress
-#+BEGIN_SRC js
-{
-    team1 : [steamid, steamid, etc...],
-    team2 : [steamid, steamid, etc...],
-    mapvotes: [(de_toscan, [steamid, steamid, etc.]), (de_mirage, [])]
-    shuffle: [steamid, steamid, steamid]
-}
-#+END_SRC
-*** POST mapname /match/:id/mapvote
-votes for a map
-*** POST /match/:id/voteshuf
-votes for a team shuffle
-*** POST steamid /match/:id/accept
-accepts the terms and conditions of gaming
-** On full accept the server serves /match/:id/live.json to the gameserver
+** DONE API
+** TODO Refactor/Organize
+** TODO Sessions/security
+** TODO On full accept the server serves /match/:id/live.json to the gameserver
+*** TODO generate correct JSON
+*** TODO RCON Connection
 * Obvious improvements to API in order of coolness:
-** discord bot integration
+** TODO discord bot integration
 ** scheduling matches (i.e. schedule a match for 9pm or something)
 ** elo score/integrate with stats
 ** make more generic, not just CSGO

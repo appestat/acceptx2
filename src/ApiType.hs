@@ -77,10 +77,10 @@ emptyQueue = Queue [] [] [] M.empty []
 
 
 addTeamA :: User -> Queue -> Queue
-addTeamA u q@(Queue{teamA = x}) = q{teamA = (u:x)}
+addTeamA u q@(Queue{teamA = x, teamB = y}) = q{teamA = (u:x), teamB= delete u teamB}
 
 addTeamB :: User -> Queue -> Queue
-addTeamB u q@(Queue{teamB = x}) = q{teamB = (u:x)}
+addTeamB u q@(Queue{teamB = x}) = q{teamB = (u:x), teamA = delete u teamA}
 
 addUndecided :: User -> Queue ->Queue
 addUndecided u q@(Queue{undecided = x})  = q{undecided = (u:x)}
@@ -153,7 +153,8 @@ app store = serve queueAPI (server' store)
 start :: IO ()
 start = newIORef M.empty >>= \x -> (run 8081 (app x))
 
-apiJS = jsForAPI queueAPI vanillaJS
+apiJS = writeJSForAPI queueAPI vanillaJS  "vanillaAPI.js"
+apiAxios = writeJSForAPI queueAPI  (axios defAxiosOptions) "axiosAPI.js"
 
 steamURI = fromJust $ (parseProvider "https://steamcommunity.com/openid/login")
 
