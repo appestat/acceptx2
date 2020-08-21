@@ -34,9 +34,12 @@ dependencies:
 - containers
 - network
 - openid
+- network-uri
 - servant-js
+- bimap
 - bytestring
 - case-insensitive
+- servant-docs
 library:
   source-dirs: src
 

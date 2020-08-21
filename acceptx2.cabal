@@ -35,14 +35,17 @@ library
     , aeson
     , base >=4.7 && <5
     , base-compat
+    , bimap
     , bytestring
     , case-insensitive
     , containers
     , directory
     , mtl
     , network
+    , network-uri
     , openid
     , servant
+    , servant-docs
     , servant-js
     , servant-server
     , transformers
@@ -63,14 +66,17 @@ executable acceptx2-exe
     , aeson
     , base >=4.7 && <5
     , base-compat
+    , bimap
     , bytestring
     , case-insensitive
     , containers
     , directory
     , mtl
     , network
+    , network-uri
     , openid
     , servant
+    , servant-docs
     , servant-js
     , servant-server
     , transformers
@@ -92,14 +98,17 @@ test-suite acceptx2-test
     , aeson
     , base >=4.7 && <5
     , base-compat
+    , bimap
     , bytestring
     , case-insensitive
     , containers
     , directory
     , mtl
     , network
+    , network-uri
     , openid
     , servant
+    , servant-docs
     , servant-js
     , servant-server
     , transformers
