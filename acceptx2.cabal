@@ -25,7 +25,10 @@ source-repository head
 
 library
   exposed-modules:
-      ApiType
+      Api
+      Monad
+      Queue
+      User
   other-modules:
       Paths_acceptx2
   hs-source-dirs:

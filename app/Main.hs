@@ -1,4 +1,4 @@
 module Main where
-import ApiType
+import Api
 main :: IO ()
 main = putStrLn "server up!" >> start

@@ -9,6 +9,7 @@
 {-# LANGUAGE TypeOperators #-}
 module Queue where
 import Data.Aeson
+import Data.Function (on)
 import qualified Data.Map as M
 import qualified Data.Bimap as B
 import Servant.Docs
@@ -49,7 +50,7 @@ instance ToSample MapName where
 
 instance Ord MapName where
   compare = compare `on` getName
-
+ 
 emptyQueue = Queue B.empty B.empty [] M.empty []
 
 addToTeam :: Team -> Int -> User -> Team
