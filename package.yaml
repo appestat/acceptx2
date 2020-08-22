@@ -42,6 +42,8 @@ dependencies:
 - servant-docs
 - rcon
 - wai-cors
+- wai-extra
+- servant-options
 library:
   source-dirs: src
 

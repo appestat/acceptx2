@@ -53,10 +53,12 @@ library
     , servant
     , servant-docs
     , servant-js
+    , servant-options
     , servant-server
     , transformers
     , wai
     , wai-cors
+    , wai-extra
     , warp
   default-language: Haskell2010
 
@@ -86,10 +88,12 @@ executable acceptx2-exe
     , servant
     , servant-docs
     , servant-js
+    , servant-options
     , servant-server
     , transformers
     , wai
     , wai-cors
+    , wai-extra
     , warp
   default-language: Haskell2010
 
@@ -120,9 +124,11 @@ test-suite acceptx2-test
     , servant
     , servant-docs
     , servant-js
+    , servant-options
     , servant-server
     , transformers
     , wai
     , wai-cors
+    , wai-extra
     , warp
   default-language: Haskell2010

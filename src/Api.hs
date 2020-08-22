@@ -27,6 +27,8 @@ import Data.IORef
 import Network.OpenID
 import Network.URI
 import Network.Wai.Middleware.Cors
+import Network.Wai.Middleware.Servant.Options
+import Network.Wai.Middleware.RequestLogger
 import Queue
 import User
 import Monad
@@ -37,7 +39,7 @@ type QueueAPI = "game" :> Capture "id" Int :>
                 (Get '[JSON] Queue
                  :<|> "teamA" :> ReqBody '[JSON] (Int, User) :> Post '[JSON] Queue
                  :<|> "teamB" :> ReqBody '[JSON] (Int, User) :> Post '[JSON] Queue
-                 :<|> ReqBody '[JSON] User :> Post '[JSON] Queue -- add to undecided
+                 :<|> "undecided" :> ReqBody '[JSON] User :> Post '[JSON] Queue -- add to undecided
                  :<|> ReqBody '[JSON] User :> Delete '[JSON] Queue
                  :<|> "voteMap" :> ReqBody '[JSON] (User, MapName) :> Post '[JSON] Queue
                  :<|> "voteShuffle" :> ReqBody '[JSON] User :> Post '[JSON] Queue
@@ -105,13 +107,16 @@ server' :: Store -> Server QueueAPI
 server' store = hoistServer queueAPI (sstatetoh store) server
 
 app :: Store -> Application
-app store = simpleCors $ serve queueAPI (server' store)
+app store = logStdoutDev $ cors (const $ Just policy) $ provideOptions queueAPI $ serve queueAPI (server' store)
+
+policy = simpleCorsResourcePolicy
+           { corsRequestHeaders = [ "content-type" ] }
 
 start :: IO ()
-start = newIORef M.empty >>= \x -> (run 8081 (app x))
+start = newIORef (M.fromList [(0, emptyQueue)]) >>= \x -> (run 8081 (app x))
 
 apiAxios :: IO ()
-apiAxios = writeJSForAPI queueAPI  (axiosWith defAxiosOptions defCommonGeneratorOptions{urlPrefix = "localhost:8081"}) "axiosAPI.js"
+apiAxios = writeJSForAPI queueAPI (axiosWith defAxiosOptions defCommonGeneratorOptions{urlPrefix = "localhost:8081"}) "axiosAPI.js"
 
 apiDocs :: IO ()
 apiDocs = writeFile "docs.md" $ (markdown . docs $ queueAPI)
