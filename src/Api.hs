@@ -24,7 +24,6 @@ import Servant
 import Servant.JS
 import Servant.Docs
 import Data.IORef
-import Network.OpenID
 import Network.URI
 
 import Queue
@@ -112,10 +111,9 @@ apiAxios = writeJSForAPI queueAPI  (axios defAxiosOptions) "axiosAPI.js"
 apiDocs :: IO ()
 apiDocs = writeFile "docs.md" $ (markdown . docs $ queueAPI)
 
-steamURI = fromJust $ (parseProvider "https://steamcommunity.com/openid/login")
+-- steamURI = fromJust $ (parseProvider "https://steamcommunity.com/openid/login")
 
 resolve :: SState ()
-resolve = do
-  let uri = (uriToString id (authenticationURI emptyAssociationMap Setup steamURI (Identifier "http://specs.openid.net/auth/2.0/identifier_select") "http://localhost:8081/auth/openid/return"
-                             (Just [("openid.ns.ax", "http://openid.net/srv/ax/1.0"),("openid.ax.mode", "fetch_request")]) (Just "http://localhost"))) ""
-  throwError $ err301 {errHeaders = pure (CI.mk (C.pack "Location"), C.pack uri)}
+resolve = return () -- broken on windows
+  -- throwError $ err301 {errHeaders = pure (CI.mk (C.pack "Location"), C.pack uril
+  -- )}

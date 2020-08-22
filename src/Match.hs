@@ -4,7 +4,7 @@ import Queue
 import Data.Aeson
 import Control.Monad.IO.Class
 import Control.Monad.Reader.Class
-import Network.Rcon.Client
+-- import Network.Rcon.Client
 import Servant.Docs
 import qualified Data.ByteString.Char8 as B
 
@@ -20,9 +20,10 @@ instance ToSample Match where
   toSamples _ = singleSample $ Match [0] [76561198217022140]
 
 tellExecute :: (MonadIO m) => Int -> m ()
-tellExecute x = do
+tellExecute _ = return ()
+{-tellExecute x = do
   server <- liftIO $ readFile "server"
   pw <- liftIO $ B.readFile "password"
   handle <- liftIO $ connect server "27015" pw
   liftIO $ execCommand handle $ (B.pack $ "get5_loadmatch_url queue.boner1.com/" ++ show x ++ "/config")
-  return ()
+  return () -}

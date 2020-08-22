@@ -33,14 +33,13 @@ dependencies:
 - directory
 - containers
 - network
-- openid
 - network-uri
 - servant-js
 - bimap
 - bytestring
 - case-insensitive
 - servant-docs
-- rcon
+  #- rcon # only works under unix 
 library:
   source-dirs: src
 

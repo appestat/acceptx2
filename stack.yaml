@@ -46,6 +46,7 @@ extra-deps:
   commit: a8dd5dc44a5bf466ecc9d5f243de9eaa5d11db91
 - git: https://github.com/appestat/rcon-haskell.git
   commit: e65e44f2f3ca6b5055c081d1fd3335e3bbb27618
+- unix-2.7.2.2@sha256:9e93f93cc5a065248120136e83a0a6d1ce93d6eb5ef2a2543f9593e93e164d24,3496
 # Override default flag values for local packages and extra-deps
 # flags: {}
 
