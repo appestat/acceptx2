@@ -26,7 +26,7 @@ import Servant.Docs
 import Data.IORef
 import Network.OpenID
 import Network.URI
-
+import Network.Wai.Middleware.Cors
 import Queue
 import User
 import Monad
@@ -92,7 +92,11 @@ server = (\ix ->
            :<|> (\(u, m) -> put ix =<< (addVote (m, u) <$> lkup ix))
            :<|> (\u -> put ix =<< (addShuffleVote u <$> lkup ix))
            :<|> (queueToMatch <$> lkup ix)
-           :<|> (\u -> void $ put ix =<< (addReady u <$> lkup ix)))
+           :<|> (\u -> do
+                    q <- lkup ix
+                    put ix =<< (addReady u <$> lkup ix)
+                    when (numRead q == 10) $ tellExecute ix
+                ))
          :<|> create
          :<|> resolve
          :<|> (\s -> pure $ User (read (Data.List.last $ pathSegments (fromJust $ parseURI (fromJust s)))))
@@ -101,13 +105,13 @@ server' :: Store -> Server QueueAPI
 server' store = hoistServer queueAPI (sstatetoh store) server
 
 app :: Store -> Application
-app store = serve queueAPI (server' store)
+app store = simpleCors $ serve queueAPI (server' store)
 
 start :: IO ()
 start = newIORef M.empty >>= \x -> (run 8081 (app x))
 
 apiAxios :: IO ()
-apiAxios = writeJSForAPI queueAPI  (axios defAxiosOptions) "axiosAPI.js"
+apiAxios = writeJSForAPI queueAPI  (axiosWith defAxiosOptions defCommonGeneratorOptions{urlPrefix = "localhost:8081"}) "axiosAPI.js"
 
 apiDocs :: IO ()
 apiDocs = writeFile "docs.md" $ (markdown . docs $ queueAPI)
