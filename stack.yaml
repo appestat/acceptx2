@@ -44,8 +44,8 @@ extra-deps:
 - monadLib-3.10@sha256:21dc120625bd612527b372e54251fd8358270effe263023d40d8e5892d24531c,653
 - git: https://github.com/appestat/hsopenid.git
   commit: a8dd5dc44a5bf466ecc9d5f243de9eaa5d11db91
-
-
+- git: https://github.com/appestat/rcon-haskell.git
+  commit: e65e44f2f3ca6b5055c081d1fd3335e3bbb27618
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

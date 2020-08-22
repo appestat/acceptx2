@@ -22,6 +22,17 @@ packages:
   original:
     git: https://github.com/appestat/hsopenid.git
     commit: a8dd5dc44a5bf466ecc9d5f243de9eaa5d11db91
+- completed:
+    name: rcon
+    version: 0.0.0.1
+    git: https://github.com/appestat/rcon-haskell.git
+    pantry-tree:
+      size: 739
+      sha256: 491b74ce2c8b8433401ade42dd40acf28bee09ba135355b2cbfb990a6f59c16e
+    commit: e65e44f2f3ca6b5055c081d1fd3335e3bbb27618
+  original:
+    git: https://github.com/appestat/rcon-haskell.git
+    commit: e65e44f2f3ca6b5055c081d1fd3335e3bbb27618
 snapshots:
 - completed:
     size: 532383

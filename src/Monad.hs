@@ -18,12 +18,21 @@ type SState = ExceptT ServerError (ReaderT Store IO)
 type Store = IORef (M.Map Int Queue)
 -- to be redis, soon
 
+
+
+
 lkup :: Int -> SState Queue
 lkup ix = do
   st <- liftIO . readIORef =<< ask
   case M.lookup ix st of
     Just q -> pure q
     Nothing -> throwError err404
+
+put :: Int -> Queue -> SState Queue
+put i q = do
+  ref <- ask
+  liftIO $ modifyIORef ref (M.insert i q)
+  pure q
 
 sstatetoh :: Store -> SState a -> Handler a
 sstatetoh store s = do

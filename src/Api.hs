@@ -30,6 +30,7 @@ import Network.URI
 import Queue
 import User
 import Monad
+import Match
 
 
 type QueueAPI = "game" :> Capture "id" Int :>
@@ -39,7 +40,9 @@ type QueueAPI = "game" :> Capture "id" Int :>
                  :<|> ReqBody '[JSON] User :> Post '[JSON] Queue -- add to undecided
                  :<|> ReqBody '[JSON] User :> Delete '[JSON] Queue
                  :<|> "voteMap" :> ReqBody '[JSON] (User, MapName) :> Post '[JSON] Queue
-                 :<|> "voteShuffle" :> ReqBody '[JSON] User :> Post '[JSON] Queue) -- remove from game
+                 :<|> "voteShuffle" :> ReqBody '[JSON] User :> Post '[JSON] Queue
+                 :<|> "config" :> Get '[JSON] Match
+                 :<|> "ready" :> ReqBody '[JSON] User :> Post '[JSON] ()) -- ACCEPT ! ACCEPT !
                 :<|> "game" :> "new" :> ReqBody '[JSON] User :> Post '[JSON] Queue
                 :<|> "auth" :> "openid" :> Post '[JSON] ()
                 :<|> "auth" :> "openid" :> "return" :> QueryParam "openid.identity" String :> Get '[JSON] User
@@ -70,6 +73,9 @@ instance ToParam (QueryParam' mods "openid.identity" String) where
   toParam _ = DocQueryParam "openid.identity" ["100", "295"] "The user's steamid" Normal
 
 
+queueToMatch :: Queue -> Match
+queueToMatch(Queue{teamA=a, teamB=b}) = Match (steamId <$> (users a)) (steamId <$> (users b))
+
 
 removeUser = undefined
 
@@ -79,12 +85,14 @@ queueAPI = Proxy
 server :: ServerT QueueAPI SState
 server = (\ix ->
             lkup ix
-           :<|> (\(i, u) -> addTeamA i u <$> lkup ix)
-           :<|> (\(i, u) -> addTeamB i u <$> lkup ix)
-           :<|> (\u -> addUndecided u <$> lkup ix)
-           :<|> (\u -> removeUser u <$> lkup ix)
-           :<|> (\(u, m) -> addVote (m, u) <$> lkup ix)
-           :<|> (\u -> addShuffleVote u <$> lkup ix))
+           :<|> (\(i, u) -> put ix =<< (addTeamA i u <$> lkup ix))
+           :<|> (\(i, u) -> put ix =<< (addTeamB i u <$> lkup ix))
+           :<|> (\u -> put ix =<< (addUndecided u <$> lkup ix))
+           :<|> (\u -> put ix =<< (removeUser u <$> lkup ix))
+           :<|> (\(u, m) -> put ix =<< (addVote (m, u) <$> lkup ix))
+           :<|> (\u -> put ix =<< (addShuffleVote u <$> lkup ix))
+           :<|> (queueToMatch <$> lkup ix)
+           :<|> (\u -> void $ put ix =<< (addReady u <$> lkup ix)))
          :<|> create
          :<|> resolve
          :<|> (\s -> pure $ User (read (Data.List.last $ pathSegments (fromJust $ parseURI (fromJust s)))))

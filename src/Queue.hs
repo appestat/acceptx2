@@ -12,6 +12,7 @@ import Data.Aeson
 import Data.Function (on)
 import qualified Data.Map as M
 import qualified Data.Bimap as B
+import qualified Data.Set as S
 import Servant.Docs
 import GHC.Generics
 
@@ -28,8 +29,12 @@ data Queue = Queue
    teamB :: Team,
    undecided :: [User],
    mapVotes :: M.Map MapName [User],
-   shuffleVotes :: [User]
+   shuffleVotes :: [User],
+   ready :: S.Set User
   } deriving Generic
+
+users :: Team -> [User]
+users = B.elems
 
 instance ToJSON Queue
 
@@ -43,7 +48,7 @@ instance ToJSON (B.Bimap Int User) where
   toJSON = toJSON . B.toMap
 
 instance ToSample Queue where
-  toSamples _ = singleSample $ Queue sampleA sampleB [User 43] sampleVote [User 0, User 1]
+  toSamples _ = singleSample $ Queue sampleA sampleB [User 43] sampleVote [User 0, User 1] S.empty
 
 instance ToSample MapName where
   toSamples _ = samples [MapName "de_dust2", MapName "de_mirage", MapName "cs_office"]
@@ -51,7 +56,11 @@ instance ToSample MapName where
 instance Ord MapName where
   compare = compare `on` getName
  
-emptyQueue = Queue B.empty B.empty [] M.empty []
+emptyQueue = Queue B.empty B.empty [] M.empty [] S.empty
+
+addReady :: User -> Queue -> Queue
+addReady u q@Queue{ready = r} =  q{ready = S.insert u r}
+
 
 addToTeam :: Team -> Int -> User -> Team
 addToTeam ps i u = B.insert i u ps
