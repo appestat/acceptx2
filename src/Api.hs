@@ -116,7 +116,7 @@ start :: IO ()
 start = newIORef (M.fromList [(0, emptyQueue)]) >>= \x -> (run 8081 (app x))
 
 apiAxios :: IO ()
-apiAxios = writeJSForAPI queueAPI (axiosWith defAxiosOptions defCommonGeneratorOptions{urlPrefix = "localhost:8081"}) "axiosAPI.js"
+apiAxios = writeJSForAPI queueAPI (axiosWith defAxiosOptions defCommonGeneratorOptions{urlPrefix = "http://localhost:8081"}) "axiosAPI.js"
 
 apiDocs :: IO ()
 apiDocs = writeFile "docs.md" $ (markdown . docs $ queueAPI)

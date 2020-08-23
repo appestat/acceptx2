@@ -44,6 +44,7 @@ dependencies:
 - wai-cors
 - wai-extra
 - servant-options
+- servant-client
 library:
   source-dirs: src
 
