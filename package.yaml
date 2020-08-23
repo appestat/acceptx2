@@ -39,7 +39,9 @@ dependencies:
 - bytestring
 - case-insensitive
 - servant-docs
-  #- rcon # only works under unix 
+- wai-cors
+- wai-extra
+- servant-options
 library:
   source-dirs: src
 

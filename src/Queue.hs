@@ -61,6 +61,8 @@ emptyQueue = Queue B.empty B.empty [] M.empty [] S.empty
 addReady :: User -> Queue -> Queue
 addReady u q@Queue{ready = r} =  q{ready = S.insert u r}
 
+numRead :: Queue -> Int
+numRead Queue{ready = r} = S.size r
 
 addToTeam :: Team -> Int -> User -> Team
 addToTeam ps i u = B.insert i u ps
@@ -70,6 +72,7 @@ addTeamA i u q@(Queue{teamA = x, teamB = teamb}) = q{teamA = addToTeam x i u, te
 
 addTeamB :: Int -> User -> Queue -> Queue
 addTeamB i u q@(Queue{teamB = x, teamA = teama}) = q{teamB = addToTeam x i u, teamA = (B.deleteR u teama)}
+
 
 addUndecided :: User -> Queue ->Queue
 addUndecided u q@(Queue{undecided = x})  = q{undecided = (u:x)}
