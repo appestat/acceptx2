@@ -40,8 +40,11 @@ dependencies:
 - case-insensitive
 - servant-docs
 - wai-cors
+- text
 - wai-extra
+- http-client
 - servant-options
+- servant-client
 library:
   source-dirs: src
 
