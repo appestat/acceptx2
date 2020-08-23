@@ -42,7 +42,9 @@ dependencies:
 - servant-docs
 - rcon
 - wai-cors
+- text
 - wai-extra
+- http-client
 - servant-options
 - servant-client
 library:
