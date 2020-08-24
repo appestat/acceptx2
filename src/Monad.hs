@@ -41,8 +41,9 @@ sstatetoh store s = do
     Right k -> return $ k
     Left err -> throwError err
 
-create :: User -> SState Queue
-create user = let newQ = addTeamA 1 user emptyQueue in
+create :: Int -> SState Queue
+create user = do
+  newQ <- addTeamA 1 user emptyQueue
   do
     st <- ask
     liftIO $ modifyIORef st (M.insert 0 newQ) >> pure newQ

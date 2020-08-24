@@ -41,6 +41,12 @@ dependencies:
 - case-insensitive
 - servant-docs
 - rcon
+- wai-cors
+- text
+- wai-extra
+- http-client
+- servant-options
+- servant-client
 library:
   source-dirs: src
 

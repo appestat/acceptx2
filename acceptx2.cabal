@@ -29,6 +29,7 @@ library
       Match
       Monad
       Queue
+      SteamCommunity
       Typeclasses
       User
   other-modules:
@@ -45,17 +46,23 @@ library
     , case-insensitive
     , containers
     , directory
+    , http-client
     , mtl
     , network
     , network-uri
     , openid
     , rcon
     , servant
+    , servant-client
     , servant-docs
     , servant-js
+    , servant-options
     , servant-server
+    , text
     , transformers
     , wai
+    , wai-cors
+    , wai-extra
     , warp
   default-language: Haskell2010
 
@@ -77,17 +84,23 @@ executable acceptx2-exe
     , case-insensitive
     , containers
     , directory
+    , http-client
     , mtl
     , network
     , network-uri
     , openid
     , rcon
     , servant
+    , servant-client
     , servant-docs
     , servant-js
+    , servant-options
     , servant-server
+    , text
     , transformers
     , wai
+    , wai-cors
+    , wai-extra
     , warp
   default-language: Haskell2010
 
@@ -110,16 +123,22 @@ test-suite acceptx2-test
     , case-insensitive
     , containers
     , directory
+    , http-client
     , mtl
     , network
     , network-uri
     , openid
     , rcon
     , servant
+    , servant-client
     , servant-docs
     , servant-js
+    , servant-options
     , servant-server
+    , text
     , transformers
     , wai
+    , wai-cors
+    , wai-extra
     , warp
   default-language: Haskell2010

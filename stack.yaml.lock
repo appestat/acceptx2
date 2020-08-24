@@ -12,6 +12,13 @@ packages:
   original:
     hackage: monadLib-3.10@sha256:21dc120625bd612527b372e54251fd8358270effe263023d40d8e5892d24531c,653
 - completed:
+    hackage: servant-options-0.1.0.0@sha256:39f50166a68006250e79370372f553ca476f14d06d93fa0c401050253aeba803,914
+    pantry-tree:
+      size: 293
+      sha256: 7812baf1b27c62068ba634207fbd7077b886424d666b36739a78c6d4008a1fd4
+  original:
+    hackage: servant-options-0.1.0.0@sha256:39f50166a68006250e79370372f553ca476f14d06d93fa0c401050253aeba803,914
+- completed:
     name: openid
     version: 0.2.1.0
     git: https://github.com/appestat/hsopenid.git
