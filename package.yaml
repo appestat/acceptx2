@@ -45,10 +45,16 @@ dependencies:
 - text
 - wai-extra
 - http-client
+- stm-conduit
 - servant-options
 - servant-client
 - servant-websockets
+- websockets
 - conduit
+- unliftio
+- unliftio-core
+- servant-subscriber
+- stm
 library:
   source-dirs: src
 

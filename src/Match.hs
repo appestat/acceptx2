@@ -7,10 +7,11 @@ import Control.Monad.Reader.Class
 import Network.Rcon.Client
 import Servant.Docs
 import qualified Data.ByteString.Char8 as B
+import User
 
 data Match = Match {
-  team1 :: [Int],
-  team2 :: [Int]
+  team1 :: [Id],
+  team2 :: [Id]
                    }
 
 instance ToJSON Match where

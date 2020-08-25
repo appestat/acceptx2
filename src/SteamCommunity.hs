@@ -30,7 +30,7 @@ instance FromJSON Resp where
   parseJSON (Object o) = Resp <$> (o .: "players")
 
 
-newtype SteamIDs = SteamIDs {ids::Int}
+newtype SteamIDs = SteamIDs {ids::Id}
 instance ToHttpApiData SteamIDs where
   toQueryParam (SteamIDs xs) = (T.pack . show) xs
 
@@ -46,7 +46,7 @@ steamAPI = Proxy
 getSteamUser' :: Maybe String -> Maybe SteamIDs -> ClientM Content
 getSteamUser' = client steamAPI
 
-getSteamUsers :: String -> Int -> IO (Content) -- TODO this is blocking?
+getSteamUsers :: String -> Id -> IO (Content) -- TODO this is blocking?
 getSteamUsers s ids = do
   manager' <- newManager defaultManagerSettings
   res <- runClientM (getSteamUser' (Just s) (Just (SteamIDs ids))) (mkClientEnv manager' (BaseUrl Http "api.steampowered.com" 80 "ISteamUser"))
@@ -54,9 +54,7 @@ getSteamUsers s ids = do
     (Right res') -> pure $ res'
     (Left failure)-> putStrLn (show failure) >> undefined
 
-type Id = Int
-
-idsToUsers :: (MonadIO m) => Int -> m SteamUser
+idsToUsers :: (MonadIO m) => Id -> m SteamUser
 idsToUsers ids = do
   key <- liftIO $ readFile "steamkey"
   liftIO $ (head . players . resp) <$> getSteamUsers (filter (/= '\n') key) ids

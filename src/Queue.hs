@@ -19,6 +19,9 @@ import Control.Monad.IO.Class
 import User
 import SteamCommunity
 
+
+type Slot = Int
+
 type Team = B.Bimap Int SteamUser
 
 newtype MapName = MapName {getName :: String}
@@ -28,14 +31,16 @@ data Queue = Queue
   {
    teamA :: Team,
    teamB :: Team,
-   undecided :: [SteamUser],
+   undecided :: S.Set SteamUser,
    mapVotes :: M.Map MapName [SteamUser],
-   shuffleVotes :: [SteamUser],
-   ready :: S.Set Int
+   shuffleVotes :: S.Set SteamUser
   } deriving Generic
 
 users :: Team -> [SteamUser]
 users = B.elems
+
+
+
 
 instance ToJSON Queue
 
@@ -51,40 +56,35 @@ instance ToJSON (B.Bimap Int SteamUser) where
 instance Ord MapName where
   compare = compare `on` getName
  
-emptyQueue = Queue B.empty B.empty [] M.empty [] S.empty
+emptyQueue = Queue B.empty B.empty S.empty M.empty S.empty
 
-addReady :: Int -> Queue -> Queue
-addReady u q@Queue{ready = r} =  q{ready = S.insert u r}
+addReady :: Id -> Queue -> Queue
+addReady u q@Queue{teamA = x, teamB = y} =  q{teamA = B.mapR (f u) x, teamB = B.mapR (f u) y}
+  where
+    matchesId i u = i == steamid u
+    f i x = if (matchesId i x) then setReady x else x
 
 numRead :: Queue -> Int
-numRead Queue{ready = r} = S.size r
+numRead Queue{teamA = x, teamB = y} = B.size (countRead x) + B.size (countRead y)
+  where
+    countRead = B.filter (\_ x -> isReady x)
 
 addToTeam :: Team -> Int -> SteamUser -> Team
 addToTeam ps i u = B.insert i u ps
 
-addTeamA :: (MonadIO m) => Int -> Int -> Queue -> m Queue
-addTeamA i u q@(Queue{teamA = x, teamB = teamb}) = do
-  u' <- idsToUsers u
-  pure $ q{teamA = addToTeam x i u', teamB= B.deleteR u' teamb}
+addTeamA ::  Int -> SteamUser -> Queue -> Queue
+addTeamA i u q@(Queue{teamA = x, teamB = teamb}) = q{teamA = addToTeam x i u, teamB= B.deleteR u teamb}
 
-addTeamB :: (MonadIO m) => Int -> Int -> Queue -> m Queue
+addTeamB :: Int -> SteamUser -> Queue -> Queue
+addTeamB i u q@(Queue{teamB = x, teamA = teama}) = q{teamB = addToTeam x i u, teamA = (B.deleteR u teama)}
 
-addTeamB i u q@(Queue{teamB = x, teamA = teama}) = do
-  u' <- idsToUsers u
-  pure $ q{teamB = addToTeam x i u', teamA = (B.deleteR u' teama)}
+addUndecided :: SteamUser -> Queue -> Queue
+addUndecided u q@(Queue{undecided = x})  = q{undecided = S.insert u x}
 
-addUndecided :: (MonadIO m) => Int -> Queue -> m Queue
-addUndecided u q@(Queue{undecided = x})  = do
-  u' <- idsToUsers u
-  pure $ q{undecided = (u':x)}
+addVote :: (MapName, SteamUser) -> Queue -> Queue
+addVote (m, u) q@(Queue{mapVotes = x})  =
+  let v = M.alter (fmap (u:)) m x in
+    q{mapVotes = v}
 
-addVote :: (MonadIO m) => (MapName, Int) -> Queue -> m Queue
-addVote (m, u) q@(Queue{mapVotes = x})  = do
-  u' <- idsToUsers u
-  let v = M.alter (fmap (u':)) m x in
-    pure $ q{mapVotes = x}
-
-addShuffleVote :: (MonadIO m) => Int -> Queue -> m Queue
-addShuffleVote u q@(Queue{shuffleVotes = x}) = do
-  u' <- idsToUsers u
-  pure $ q{shuffleVotes = (u':x)}
+addShuffleVote :: SteamUser -> Queue -> Queue
+addShuffleVote u q@(Queue{shuffleVotes = x}) = q{shuffleVotes = S.insert u x}
