@@ -47,6 +47,8 @@ dependencies:
 - http-client
 - servant-options
 - servant-client
+- servant-websockets
+- conduit
 library:
   source-dirs: src
 

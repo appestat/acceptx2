@@ -29,7 +29,6 @@ library
       Match
       Monad
       Queue
-      SteamCommunity
       Typeclasses
       User
   other-modules:
@@ -44,6 +43,7 @@ library
     , bimap
     , bytestring
     , case-insensitive
+    , conduit
     , containers
     , directory
     , http-client
@@ -58,6 +58,7 @@ library
     , servant-js
     , servant-options
     , servant-server
+    , servant-websockets
     , text
     , transformers
     , wai
@@ -82,6 +83,7 @@ executable acceptx2-exe
     , bimap
     , bytestring
     , case-insensitive
+    , conduit
     , containers
     , directory
     , http-client
@@ -96,6 +98,7 @@ executable acceptx2-exe
     , servant-js
     , servant-options
     , servant-server
+    , servant-websockets
     , text
     , transformers
     , wai
@@ -121,6 +124,7 @@ test-suite acceptx2-test
     , bimap
     , bytestring
     , case-insensitive
+    , conduit
     , containers
     , directory
     , http-client
@@ -135,6 +139,7 @@ test-suite acceptx2-test
     , servant-js
     , servant-options
     , servant-server
+    , servant-websockets
     , text
     , transformers
     , wai
