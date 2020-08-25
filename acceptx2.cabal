@@ -29,6 +29,7 @@ library
       Match
       Monad
       Queue
+      SteamCommunity
       Typeclasses
       User
   other-modules:
