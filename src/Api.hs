@@ -12,7 +12,7 @@ module Api where
 
 import Prelude
 import GHC.Conc
-
+import Debug.Trace
 import Control.Monad.Except
 import Data.List
 import qualified Data.ByteString.Char8 as C
@@ -67,8 +67,8 @@ type QueueAPI = ("game" :> Capture "id" Int :>
                  :<|> "config" :> Get '[JSON] Match
                  :<|> "ready" :> ReqBody '[JSON] Id :> Post '[JSON] ()))
                 :<|> "game" :> "new" :> ReqBody '[JSON] Id :> Post '[JSON] Queue
-                :<|> "auth" :> "openid" :>  Get '[JSON] ()
-
+                :<|> "auth" :> "openid" :> Get '[JSON] ()
+                :<|> "auth" :> "openid" :> "return" :> QueryParam "openid.identity" String :> Get '[JSON] Int
 
 type QueueAPISocket = QueueAPI :<|> WebSocketAPI
 
@@ -150,7 +150,8 @@ server = ((\ix -> lkup ix
                     q <- matchModify ix (addReady u)
                     when (numRead q == 10) $ tellExecute ix))
          :<|> create
-         :<|> (resolve ""))
+         :<|> (resolve "http://localhost")
+         :<|> (\s -> throwError $ err302 {errHeaders = pure $ ((CI.mk (C.pack "Location")), (C.pack $ traceId $ "http://localhost:3000/?id="++ (Data.List.last $ pathSegments (fromJust $ parseURI (fromJust s)))))}))
          :<|> sock
 
 
@@ -186,6 +187,6 @@ steamURI = fromJust $ (parseProvider "https://steamcommunity.com/openid/login")
 
 resolve :: String -> SState ()
 resolve s = do
-  let uri = (uriToString id (authenticationURI emptyAssociationMap Setup steamURI (Identifier "http://specs.openid.net/auth/2.0/identifier_select") "http://localhost:3000"
-                             (Just [("openid.ns.ax", "http://openid.net/srv/ax/1.0"),("openid.ax.mode", "fetch_request")]) (Just "http://localhost"))) ""
-  throwError $ err301 {errHeaders = pure (CI.mk (C.pack "Location"), C.pack uri)}
+  let uri = (uriToString id (authenticationURI emptyAssociationMap Setup steamURI (Identifier "http://specs.openid.net/auth/2.0/identifier_select") "http://localhost:8081/auth/openid/return"
+                             (Just [("openid.ns.ax", "http://openid.net/srv/ax/1.0"),("openid.ax.mode", "fetch_request")]) (Just s))) ""
+  throwError $ err302 {errHeaders = pure (CI.mk (C.pack "Location"), C.pack uri)}
